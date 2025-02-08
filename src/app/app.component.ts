@@ -17,11 +17,15 @@ export class AppComponent implements OnInit {
 
   fileName = '';
   showDialog = false;
+  showDownloadDialog = false;
   fileUploadForm: FormGroup;
+  fileDownloadForm: FormGroup;
   selectedFile: File = null;
+  valueEntered: string = '';
   constructor(private apiService: ApiService, private fb: FormBuilder) { }
   ngOnInit(): void {
     this.createDocumentFileForm();
+    this.createDownloadForm();
   }
 
 
@@ -30,13 +34,26 @@ export class AppComponent implements OnInit {
       file: [null, Validators.required]
     })
   }
+  createDownloadForm(){
+    this.fileDownloadForm = this.fb.group({
+      String: [null, Validators.required]
+    })
+  }
 
   get _file(){
     return this.fileUploadForm.get('file');
   }
+  
+  get _string(){
+    return this.fileDownloadForm.get('String');
+  }
 
   openDocumentAddDialog(){
     this.showDialog = true;
+  }
+
+  openDocumentDownloadDialog(){
+    this.showDownloadDialog = true;
   }
 
   onFileSelected(event: any): void {
@@ -68,34 +85,46 @@ export class AppComponent implements OnInit {
     }
   }
 
+  onTextEntered(event: any): void{
+    this.valueEntered = event.target.value;
+  }
+
   
   Upload(){
 
+    this.apiService.addDocument(this.selectedFile).subscribe({
+    next: () => {
+      console.log('Document added Successfully');
+      this.showDialog = false;
+      this.fileUploadForm.patchValue({ file: null });
+      this.fileName = '';
+    },
+    error: (err) => {
+      console.error('Error adding document', err);
+    }
+    });
   }
 
   Download(){
+
+    this.apiService.downloadDocument(this.valueEntered).subscribe({
+      next: (response) => {
+        console.log('Download initiated successfully');
+      },
+      error: (err) => {
+        console.error('Download failed', err);
+      },
+    });
 
   }
 
 
   cancel() {
     this.showDialog = false;
+    this.showDownloadDialog = false;
     this.fileUploadForm.patchValue({ file: null });
     this.fileName = '';
-  }
-
-  save() {
-    // this.dmsService.addDocument(this.selectedFile, this.id).subscribe({
-    //   next: () => {
-    //     this.toast.success('Document added Successfully');
-    //     this.showDialog = false;
-    //     this.fileUploadForm.patchValue({ file: null });
-    //     this.fileName = '';
-    //     this.loadDocuments();
-    //   },
-    //   error: (err) => {
-    //     this.toast.error('Error adding document', err);
-    //   },
-    // });s
+    this.valueEntered = '';
+    this.fileDownloadForm.patchValue({ String: null });
   }
 }

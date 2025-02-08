@@ -1,35 +1,44 @@
 <div style="text-align:center; margin-top: 50px;">
   <h1>WSO2 test app</h1>
-  
+
   <button (click)="openDocumentAddDialog()">Upload Document</button>
-  <button (click)="Download()">Download Document</button>
-  
+  <button (click)="openDocumentDownloadDialog()">Download Document</button>
+
 </div>
 
 
 <!-- Custom dialog to add document -->
 <div class="custom-dialog" *ngIf="showDialog">
-  <form [formGroup]="fileUploadForm" novalidate (ngSubmit)="save()">
+  <form [formGroup]="fileUploadForm" novalidate (ngSubmit)="Upload()">
     <div class="custom-dialog-content">
       <h2 class="custom-dialog-title">Add New Document</h2>
-      <input
-        type="file"
-        formControlName="file"
-        class="form-control"
-        [class.is-valid]="_file.valid"
-        (change)="onFileSelected($event)"
-        accept=".pdf, .png, .jpg, .svg, .html, .gif"
-      />
+      <input type="file" formControlName="file" class="form-control" [class.is-valid]="_file.valid"
+        (change)="onFileSelected($event)" accept=".pdf, .png, .jpg, .svg, .html, .gif" />
       <div class="custom-dialog-actions">
         <button type="button" class="btn btn-secondary" (click)="cancel()">
           Cancel
         </button>
-        <button
-          type="submit"
-          class="btn btn-outline-success"
-          [disabled]="fileUploadForm.invalid"
-        >
+        <button type="submit" class="btn btn-outline-success" [disabled]="fileUploadForm.invalid">
           Upload
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Custom dialog to add document -->
+<div class="custom-dialog" *ngIf="showDownloadDialog">
+  <form [formGroup]="fileDownloadForm" novalidate (ngSubmit)="Download()">
+    <div class="custom-dialog-content">
+      <h2 class="custom-dialog-title">Download Document</h2>
+      <input type="text" formControlName="String" class="form-control" [class.is-valid]="_string.valid"
+        (change)="onTextEntered($event)" />
+      <div class="custom-dialog-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-outline-success" [disabled]="fileDownloadForm.invalid">
+          Download
         </button>
       </div>
     </div>
