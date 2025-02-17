@@ -98,9 +98,11 @@ export class AppComponent implements OnInit {
       this.showDialog = false;
       this.fileUploadForm.patchValue({ file: null });
       this.fileName = '';
+      this.cancel();
     },
     error: (err) => {
       console.error('Error adding document', err);
+      this.cancel();
     }
     });
   }
@@ -110,9 +112,11 @@ export class AppComponent implements OnInit {
     this.apiService.downloadDocument(this.valueEntered).subscribe({
       next: (response) => {
         console.log('Download initiated successfully');
+        this.cancel();
       },
       error: (err) => {
         console.error('Download failed', err);
+        this.cancel();
       },
     });
 
